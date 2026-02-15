@@ -292,11 +292,25 @@ def cleanup_old(conn: sqlite3.Connection) -> bool:
     cutoff = int((datetime.now(timezone.utc) - timedelta(hours=CLEANUP_HOURS)).timestamp())
     try:
         conn.execute(
-            "DELETE FROM cad WHERE time_epoch < ? LIMIT 200",
+            """
+            DELETE FROM cad
+            WHERE rowid IN (
+                SELECT rowid FROM cad
+                WHERE time_epoch < ?
+                LIMIT 200
+            )
+            """,
             (cutoff,),
         )
         conn.execute(
-            "DELETE FROM calls WHERE time_epoch < ? LIMIT 200",
+            """
+            DELETE FROM calls
+            WHERE rowid IN (
+                SELECT rowid FROM calls
+                WHERE time_epoch < ?
+                LIMIT 200
+            )
+            """,
             (cutoff,),
         )
         return True
