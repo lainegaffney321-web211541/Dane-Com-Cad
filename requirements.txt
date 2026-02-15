@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+curl_cffi
+faster-whisper
+streamlit
+pydantic
+pandas
